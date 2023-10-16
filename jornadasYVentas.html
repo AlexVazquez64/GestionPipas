@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Jornadas y Ventas</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+
+    <!-- SweetAlert2 CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+
+    <link rel="stylesheet" href="./css/jornadasYVentas.css" />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <button class="btn-regresar">Regresar a Panel de Control</button>
+
+      <h1 class="mb-4 text-center">Jornadas y Ventas</h1>
+      <table class="table table-hover table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>ID Jornada</th>
+            <th>Folio</th>
+            <th>ID Unidad</th>
+            <th>Fecha Emisión</th>
+            <th>Fecha Cierre</th>
+            <th>Estatus</th>
+            <th>Estatus Réplica</th>
+            <th>Detalle</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Las filas y columnas se agregarán aquí dinámicamente desde JavaScript -->
+        </tbody>
+      </table>
+    </div>
+
+    <div
+      class="modal fade"
+      id="detalleVentaModal"
+      tabindex="-1"
+      aria-labelledby="detalleVentaModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="detalleVentaModalLabel">
+              Detalle de la Venta
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body" id="detalleVentaModalBody">
+            <!-- Aquí se colocará la información del ticket y el mapa -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="alertContainer"></div>
+
+    <!-- MODAL EDITAR JORNADA -->
+    <div
+      class="modal fade"
+      id="editarJornadaModal"
+      tabindex="-1"
+      aria-labelledby="editarJornadaModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editarJornadaModalLabel">
+              Editar Jornada
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="editarJornadaForm" novalidate>
+              <div class="mb-3">
+                <label for="FechaEmision" class="form-label"
+                  >Fecha Emisión</label
+                >
+                <input
+                  type="datetime-local"
+                  class="form-control"
+                  id="FechaEmision"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="FechaCierre" class="form-label">Fecha Cierre</label>
+                <input
+                  type="datetime-local"
+                  class="form-control"
+                  id="FechaCierre"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="EstatusReplica" class="form-label"
+                  >Estatus Réplica</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="EstatusReplica"
+                  required
+                />
+              </div>
+              <input type="hidden" id="idJornada" value="" />
+              <button type="submit" class="btn btn-primary">Actualizar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL EDITAR VENTA -->
+    <div
+      class="modal fade"
+      id="editarVentaModal"
+      tabindex="-1"
+      aria-labelledby="editarVentaModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editarVentaModalLabel">Editar Venta</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <form id="editarVentaForm" novalidate>
+              <input type="hidden" id="idVenta" value="" />
+
+              <!-- Lista de campos a editar -->
+              <div class="mb-3">
+                <label for="Masa" class="form-label">Masa</label>
+                <input type="text" class="form-control" id="Masa" required />
+              </div>
+
+              <div class="mb-3">
+                <label for="Volumen" class="form-label">Volumen</label>
+                <input type="text" class="form-control" id="Volumen" required />
+              </div>
+
+              <div class="mb-3">
+                <label for="Densidad" class="form-label">Densidad</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="Densidad"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="Temperatura" class="form-label">Temperatura</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="Temperatura"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="Precio" class="form-label">Precio</label>
+                <input type="text" class="form-control" id="Precio" required />
+              </div>
+
+              <div class="mb-3">
+                <label for="Esquema" class="form-label">Esquema</label>
+                <input type="text" class="form-control" id="Esquema" required />
+              </div>
+
+              <div class="mb-3">
+                <label for="TotalVenta" class="form-label">Total Venta</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="TotalVenta"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="FechaInicio" class="form-label">Fecha Inicio</label>
+                <input
+                  type="datetime-local"
+                  class="form-control"
+                  id="FechaInicio"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="FechaFin" class="form-label">Fecha Fin</label>
+                <input
+                  type="datetime-local"
+                  class="form-control"
+                  id="FechaFin"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="sistemaLecturaInicial" class="form-label"
+                  >Sistema Lectura Inicial</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="sistemaLecturaInicial"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="sistemaLecturaFinal" class="form-label"
+                  >Sistema Lectura Final</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="sistemaLecturaFinal"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="lecturaInicial" class="form-label"
+                  >Lectura Inicial</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="lecturaInicial"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="lecturaFinal" class="form-label"
+                  >Lectura Final</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="lecturaFinal"
+                  required
+                />
+              </div>
+
+              <button type="submit" class="btn btn-primary">Actualizar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="./js/jornadasYVentas.js"></script>
+  </body>
+</html>
