@@ -1,0 +1,54 @@
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #F5F5F5; /* Color de fondo más claro */
+  color: #2C3E50; /* Color de texto oscuro */
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 85%; /* Amplitud ligeramente aumentada */
+  margin: auto;
+  padding-top: 2%; /* Espacio en la parte superior para dar respiración */
+}
+
+.card {
+  background-color: #FFFFFF;
+  color: #2C3E50;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px; /* Espacio entre tarjetas */
+  border-radius: 10px; /* Bordes redondeados */
+}
+
+.card .btn-primary {
+  background-color: #3498DB;
+  border-color: #3498DB;
+  border-radius: 5px;
+  transition: background-color 0.2s;
+}
+
+.card .btn-primary:hover {
+  background-color: #2980B9;
+  border-color: #2980B9;
+}
+
+.card-title {
+  font-weight: 600; /* Título más audaz */
+  margin-bottom: 15px; /* Espacio adicional debajo del título */
+}
+
+#logoutBtn {
+  background-color: #e74c3c;
+  border-color: #e74c3c;
+  transition: background-color 0.2s;
+}
+
+#logoutBtn:hover {
+  background-color: #c0392b;
+  border-color: #c0392b;
+}
+
+h1 {
+  font-weight: 600; /* Hace que el título sea más audaz */
+  margin-bottom: 25px; /* Espacio después del título */
+}
