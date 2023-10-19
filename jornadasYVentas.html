@@ -29,6 +29,24 @@
       <button class="btn-regresar">Regresar a Panel de Control</button>
 
       <h1 class="mb-4 text-center">Jornadas y Ventas</h1>
+      <!-- Input para búsqueda -->
+      <input
+        type="text"
+        id="search-jornadas"
+        placeholder="Buscar por ID Jornada, Folio, ID Unidad..."
+        class="form-control mb-3"
+      />
+      <!-- Grupo de botones para acciones generales -->
+      <div class="mb-3">
+        <button id="kill-replica" class="btn btn-danger">
+          Matar Réplica de Ventas
+        </button>
+        
+        <button id="initialize-readers" class="btn btn-primary">
+          Inicializar Lecturas
+        </button>
+      </div>
+
       <table class="table table-hover table-striped table-bordered">
         <thead>
           <tr>

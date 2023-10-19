@@ -3,9 +3,25 @@ const apiUrl = "http://192.168.200.144/ecosat/replicaventas/vistas/service.php";
 
 let jornadaData = {}; // Variable para almacenar los datos de la jornada
 let ventaData = {}; // Variable para almacenar los datos de la venta
+let jornadasData = []; // Almacena todas las jornadas para poder filtrar después
 
 // El objeto 'dbConfig' podría tener la configuración de la base de datos si la necesitas.
 const dbConfig = JSON.parse(sessionStorage.getItem("dbConfig"));
+
+function filtrarJornadas(query) {
+  // Convertimos la consulta a minúsculas para una búsqueda no sensible a mayúsculas/minúsculas
+  const lowerQuery = query.toLowerCase();
+
+  // Filtramos las jornadas basadas en la consulta
+  const jornadasFiltradas = jornadasData.filter(
+    (jornada) =>
+      jornada.idJornada.toString().includes(lowerQuery) ||
+      jornada.Folio.toString().includes(lowerQuery) ||
+      jornada.idUnidad.toString().includes(lowerQuery)
+  );
+
+  renderizarTablaJornadas(jornadasFiltradas);
+}
 
 // Obtienes los datos de la API y los renderizas en la tabla.
 async function fetchVentasAndJornadas() {
@@ -33,7 +49,9 @@ async function fetchVentasAndJornadas() {
     let data = await response.json();
 
     if (data && data[0] && data[0].obj) {
-      renderizarTabla(data[0].obj);
+      jornadasData = data[0].obj; // Guardar todas las jornadas
+      console.log(jornadaData)
+      renderizarTablaJornadas(jornadasData);
     }
   } catch (error) {
     console.error("Error al obtener los datos", error);
@@ -290,15 +308,39 @@ function showSweetAlert(message, type) {
 }
 
 // Renderizas los datos en la tabla.
-function renderizarTabla(jornadas) {
+/**
+ * Función que renderiza las jornadas en una tabla HTML.
+ * @param {Array} jornadas - Arreglo de objetos de jornadas a renderizar.
+ */
+function renderizarTablaJornadas(jornadas) {
+  // Seleccionamos el cuerpo de la tabla en el documento.
   const tbody = document.querySelector("tbody");
+  tbody.innerHTML = '';
 
+  // Iteramos sobre cada jornada en el arreglo.
   jornadas.forEach((jornada) => {
+    // Creamos una fila (tr) para la jornada actual.
     let tr = document.createElement("tr");
-    tr.id = `row${jornada.idJornada}`; // Asignar ID único
-    tr.classList.add("table-row-expandable"); // Aquí se añade la nueva clase.
+    tr.id = `row${jornada.idJornada}`;
+    tr.classList.add("table-row-expandable");
 
-    // Modificando para tener solo las celdas necesarias
+    // Verificamos si la jornada está abierta y creamos el botón de cerrar jornada.
+    let botonCerrarJornada = "";
+    if (jornada.Estatus === "ABI") {
+      botonCerrarJornada = `<button class="btn btn-danger btn-cerrar-jornada" data-jornada-id="${jornada.idJornada}">
+                      <i class="fas fa-times-circle"></i> Cerrar Jornada
+                    </button>`;
+    }
+
+    // Verificamos si la réplica de la jornada no está hecha y creamos el botón de forzar réplica.
+    let botonReplicaJornada = "";
+    if (jornada.EstatusReplica === "1") {
+      botonReplicaJornada = `<button class="btn btn-primary btn-forzar-replica-jornada" data-jornada-id="${jornada.idJornada}">
+                    <i class="fas fa-sync-alt"></i> Forzar Réplica
+                  </button>`;
+    }
+
+    // Establecemos el contenido de la fila (tr) con los datos de la jornada y los botones.
     tr.innerHTML = `
             <td>${jornada.idJornada}</td>
             <td>${jornada.Folio}</td>
@@ -310,9 +352,10 @@ function renderizarTabla(jornadas) {
             <td>
               <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${
                 jornada.idJornada
-              }" aria-expanded="false" aria-controls="collapse${
-      jornada.idJornada
-    }">
+              }" 
+                  aria-expanded="false" aria-controls="collapse${
+                    jornada.idJornada
+                  }">
                 <i class="fas fa-eye"></i>
               </button>
             </td>
@@ -321,26 +364,37 @@ function renderizarTabla(jornadas) {
                 jornada
               )}'>
                 <i class="fas fa-edit"></i> Editar
-              </button>
+              </button><br>
+              ${botonCerrarJornada}<br>
+              ${botonReplicaJornada}
             </td>`;
 
+    // Añadimos la fila (tr) al cuerpo de la tabla.
     tbody.appendChild(tr);
 
-    // Crear una nueva fila para el contenido expandible
+    // Creamos una fila adicional para mostrar detalles (ventas) de la jornada cuando se expanda.
     let trCollapse = document.createElement("tr");
     trCollapse.innerHTML = `
             <td colspan="9">
                 <div class="collapse" id="collapse${jornada.idJornada}">
                     <div class="card card-body">
-                        ${renderizarVentas(jornada.sales)}
+                        ${renderizarTablaVentas(jornada.sales)}
                     </div>
                 </div>
             </td>`;
+
+    // Añadimos la fila de detalles al cuerpo de la tabla.
     tbody.appendChild(trCollapse);
   });
 }
 
-function renderizarVentas(ventas) {
+/**
+ * Función que renderiza las ventas en una tabla HTML.
+ * @param {Array} ventas - Arreglo de objetos de ventas a renderizar.
+ * @returns {string} - Retorna una cadena HTML que representa la tabla de ventas.
+ */
+function renderizarTablaVentas(ventas) {
+  // Iniciamos con la estructura base de la tabla de ventas.
   let tablaVentas = `<table class="table table-hover table-striped table-bordered table-ventas">
                       <thead>
                         <tr>
@@ -351,11 +405,23 @@ function renderizarVentas(ventas) {
                           <th>Fecha Inicio</th>
                           <th>Fecha Fin</th>
                           <th>Estatus Entrega</th>
+                          <th>Estatus Réplica</th>
                           <th>Acciones</th>
                         </tr>
                       </thead>
                       <tbody>`;
+
+  // Iteramos sobre cada venta en el arreglo.
   ventas.forEach((venta) => {
+    // Botón para forzar la réplica de la venta.
+    let botonForzarReplica = "";
+    if (venta.EstatusReplica === "1") {
+      botonForzarReplica = `<button class="btn btn-primary btn-forzar-replica-venta" data-venta-id="${venta.id}">
+                      <i class="fas fa-sync-alt"></i> Forzar Réplica
+                    </button>`;
+    }
+
+    // Añadimos una fila por cada venta con sus datos y botones de acción.
     tablaVentas += `<tr>
                       <td>${venta.FolioVenta}</td>
                       <td>${venta.Volumen}</td>
@@ -364,23 +430,27 @@ function renderizarVentas(ventas) {
                       <td>${venta.FechaInicio}</td>
                       <td>${venta.FechaFin}</td>
                       <td>${venta.estatusEntrega}</td>
+                      <td>${venta.EstatusReplica}</td>
                       <td>
                         <button class="btn btn-info btn-detalle" data-venta='${JSON.stringify(
                           venta
                         )}'>
                             <i class="fas fa-info-circle"></i> Detalle
-                        </button>
+                        </button><br>
                         <button class="btn btn-warning btn-editar-venta" data-venta='${JSON.stringify(
                           venta
                         )}'>
                             <i class="fas fa-edit"></i> Editar
-                        </button>
+                        </button><br>
+                        ${botonForzarReplica}
                       </td>
                     </tr>`;
   });
 
+  // Finalizamos la estructura de la tabla.
   tablaVentas += `  </tbody>
                   </table>`;
+
   return tablaVentas;
 }
 
@@ -433,6 +503,165 @@ document.addEventListener("click", function (e) {
   }
 });
 
+// CERRAR JORNADA
+async function handleCerrarJornada(event) {
+  const idJornada = event.target.getAttribute("data-jornada-id");
+
+  if (!idJornada) return;
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        mode: "journeys",
+        connection: dbConfig,
+        journeysales: {
+          step: 2,
+          folio: 0,
+          id: parseInt(idJornada, 10),
+          readers: null,
+        },
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data && data[0] && data[0].response.id == 1) {
+      Swal.fire({
+        icon: "success",
+        title: "Jornada cerrada con éxito!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      fetchVentasAndJornadas();
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Hubo un error al cerrar la jornada.",
+        text: data[0].response.message,
+      });
+    }
+  } catch (error) {
+    console.error("Error al cerrar la jornada", error);
+    Swal.fire({
+      icon: "error",
+      title: "Hubo un error al cerrar la jornada.",
+      text: "Por favor, inténtalo de nuevo más tarde.",
+    });
+  }
+}
+
+/**
+ * Maneja el evento de forzar réplica en una jornada específica.
+ * @param {Event} event - El evento de clic que dispara esta función.
+ */
+async function handleForzarReplicaJornada(event) {
+  const idJornada = event.target.getAttribute("data-jornada-id");
+
+  if (!idJornada) return;
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        mode: "journeys",
+        connection: dbConfig,
+        journeysales: {
+          step: 3,
+          folio: 0,
+          id: parseInt(idJornada, 10),
+          readers: null,
+        },
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data && data[0] && data[0].response.id == 1) {
+      Swal.fire({
+        icon: "success",
+        title: "Réplica de jornada forzada con éxito!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      fetchVentasAndJornadas();
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Hubo un error al forzar la réplica de jornada.",
+        text: data[0].response.message,
+      });
+    }
+  } catch (error) {
+    console.error("Error al forzar la réplica de jornada", error);
+    Swal.fire({
+      icon: "error",
+      title: "Hubo un error al forzar la réplica de jornada.",
+      text: "Por favor, inténtalo de nuevo más tarde.",
+    });
+  }
+}
+
+/**
+ * Maneja el evento de forzar réplica en una venta específica.
+ * @param {Event} event - El evento de clic que dispara esta función.
+ */
+async function handleForzarReplicaVenta(event) {
+  const idVenta = event.target.getAttribute("data-venta-id");
+
+  if (!idVenta) return;
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        mode: "sales", // Asumo que el modo sería 'sales', ajusta según tu API.
+        connection: dbConfig,
+        journeysales: {
+          step: 4,
+          folio: 0,
+          id: parseInt(idVenta, 10),
+          readers: null,
+        },
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data && data[0] && data[0].response.id == 1) {
+      Swal.fire({
+        icon: "success",
+        title: "Réplica de venta forzada con éxito!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      fetchVentasAndJornadas();
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Hubo un error al forzar la réplica de venta.",
+        text: data[0].response.message,
+      });
+    }
+  } catch (error) {
+    console.error("Error al forzar la réplica de venta", error);
+    Swal.fire({
+      icon: "error",
+      title: "Hubo un error al forzar la réplica de venta.",
+      text: "Por favor, inténtalo de nuevo más tarde.",
+    });
+  }
+}
+
 function initMap(lat, lon) {
   // Crear el objeto mapa
   const map = L.map("map").setView([lat, lon], 17);
@@ -447,9 +676,132 @@ function initMap(lat, lon) {
   L.marker([lat, lon]).addTo(map);
 }
 
+document.getElementById("kill-replica").addEventListener("click", function() {
+  if (confirm("¿Estás seguro de que deseas matar la réplica de todas las ventas?")) {
+    // Llamar a la función o API que mata la réplica
+    handleKillReplica();
+  }
+});
+
+async function handleKillReplica() {
+  try {
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        mode: "journeys",
+        connection: dbConfig,
+        journeysales: {
+          step: 5,
+          folio: 0,
+          id: 0,
+          readers: null,
+        },
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data && data[0] && data[0].response.id == 1) {
+      Swal.fire({
+        icon: "success",
+        title: "Réplica de ventas eliminada con éxito!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      fetchVentasAndJornadas();  // Si es necesario volver a obtener los datos después de la acción
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Hubo un error al eliminar la réplica de ventas.",
+        text: data[0].response.message,
+      });
+    }
+  } catch (error) {
+    console.error("Error al eliminar la réplica de ventas", error);
+    Swal.fire({
+      icon: "error",
+      title: "Hubo un error al eliminar la réplica de ventas.",
+      text: "Por favor, inténtalo de nuevo más tarde.",
+    });
+  }
+}
+
+
+document.getElementById("initialize-readers").addEventListener("click", function() {
+  let readersValue = prompt("Introduce el valor para inicializar las lecturas:", "");
+  if (readersValue) {
+    // Llamar a la función o API para inicializar las lecturas con el valor proporcionado
+    handleInitializeReaders(readersValue);
+  }
+});
+
+async function handleInitializeReaders(readersValue) {
+  try {
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        mode: "journeys",
+        connection: dbConfig,
+        journeysales: {
+          step: 6,
+          folio: 0,
+          id: 0,
+          readers: readersValue,
+        },
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data && data[0] && data[0].response.id == 1) {
+      Swal.fire({
+        icon: "success",
+        title: "Lecturas inicializadas con éxito!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      fetchVentasAndJornadas();  // Si es necesario volver a obtener los datos después de la acción
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Hubo un error al inicializar las lecturas.",
+        text: data[0].response.message,
+      });
+    }
+  } catch (error) {
+    console.error("Error al inicializar las lecturas", error);
+    Swal.fire({
+      icon: "error",
+      title: "Hubo un error al inicializar las lecturas.",
+      text: "Por favor, inténtalo de nuevo más tarde.",
+    });
+  }
+}
+
+
 document.querySelector(".btn-regresar").addEventListener("click", function () {
   window.location.href = "panelDeControl.html";
 });
 
+document.addEventListener("click", (event) => {
+  if (event.target.matches(".btn-cerrar-jornada")) {
+    handleCerrarJornada(event);
+  } else if (event.target.matches(".btn-forzar-replica-jornada")) {
+    handleForzarReplicaJornada(event);
+  } else if (event.target.matches(".btn-forzar-replica-venta")) {
+    handleForzarReplicaVenta(event);
+  }
+});
+
+document.getElementById("search-jornadas").addEventListener("input", (e) => {
+  filtrarJornadas(e.target.value);
+});
+
 // Llamas a la función obtenerDatos() cuando el DOM está completamente cargado.
-document.addEventListener("DOMContentLoaded", fetchVentasAndJornadas());
+document.addEventListener("DOMContentLoaded", fetchVentasAndJornadas);
