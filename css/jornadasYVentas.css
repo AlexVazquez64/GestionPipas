@@ -38,7 +38,7 @@ body {
   background-color: #ffffff;
   color: #2c3e50;
   border-radius: 5px;
-  overflow: hidden;
+  /* overflow: hidden; */
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 
@@ -65,6 +65,13 @@ body {
 .table tbody tr:hover,
 .table-ventas tbody tr:hover {
   background-color: #e7e7e7;
+}
+
+/* Estilo para centrar cabeceras */
+td,
+th {
+  text-align: center;
+  vertical-align: middle;
 }
 
 .btn {
@@ -131,7 +138,7 @@ body {
 }
 
 #map {
-  height: 350px;
+  height: 500px;
   margin: 20px 0;
 }
 
@@ -165,6 +172,10 @@ body {
   background-color: #2980b9;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 h1.mb-4.text-center {
   color: #2c3e50;
   margin-top: 2rem;
@@ -181,4 +192,8 @@ h1.mb-4.text-center {
 /* Espacio superior e inferior para botones dentro del modal */
 .modal-body .btn {
   margin-top: 20px;
+}
+
+.dropdown-menu {
+  z-index: 9999 !important;
 }

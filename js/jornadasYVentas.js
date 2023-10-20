@@ -50,7 +50,7 @@ async function fetchVentasAndJornadas() {
 
     if (data && data[0] && data[0].obj) {
       jornadasData = data[0].obj; // Guardar todas las jornadas
-      console.log(jornadaData)
+      console.log(jornadaData);
       renderizarTablaJornadas(jornadasData);
     }
   } catch (error) {
@@ -315,59 +315,79 @@ function showSweetAlert(message, type) {
 function renderizarTablaJornadas(jornadas) {
   // Seleccionamos el cuerpo de la tabla en el documento.
   const tbody = document.querySelector("tbody");
-  tbody.innerHTML = '';
+  tbody.innerHTML = "";
 
   // Iteramos sobre cada jornada en el arreglo.
   jornadas.forEach((jornada) => {
-    // Creamos una fila (tr) para la jornada actual.
+    // Crear una fila (tr) para la jornada actual.
     let tr = document.createElement("tr");
     tr.id = `row${jornada.idJornada}`;
     tr.classList.add("table-row-expandable");
 
-    // Verificamos si la jornada está abierta y creamos el botón de cerrar jornada.
-    let botonCerrarJornada = "";
-    if (jornada.Estatus === "ABI") {
-      botonCerrarJornada = `<button class="btn btn-danger btn-cerrar-jornada" data-jornada-id="${jornada.idJornada}">
-                      <i class="fas fa-times-circle"></i> Cerrar Jornada
-                    </button>`;
-    }
+    // Establecer botones
+    let botonEditar = `
+      <a class="dropdown-item cursor-pointer btn-editar" data-jornada='${JSON.stringify(
+        jornada
+      )}'>
+        <i class="fas fa-edit"></i> Editar
+      </a>`;
 
-    // Verificamos si la réplica de la jornada no está hecha y creamos el botón de forzar réplica.
-    let botonReplicaJornada = "";
-    if (jornada.EstatusReplica === "1") {
-      botonReplicaJornada = `<button class="btn btn-primary btn-forzar-replica-jornada" data-jornada-id="${jornada.idJornada}">
-                    <i class="fas fa-sync-alt"></i> Forzar Réplica
-                  </button>`;
-    }
+    let botonCerrarJornada =
+      jornada.Estatus === "ABI"
+        ? `
+          <a class="dropdown-item cursor-pointer btn-cerrar-jornada" data-jornada-id="${jornada.idJornada}">
+            <i class="fas fa-times-circle"></i> Cerrar Jornada
+          </a>`
+        : "";
+
+    let botonReplicaJornada =
+      jornada.EstatusReplica === "1"
+        ? `
+          <a class="dropdown-item cursor-pointer btn-forzar-replica-jornada" data-jornada-id="${jornada.idJornada}">
+            <i class="fas fa-sync-alt"></i> Forzar Réplica
+          </a>`
+        : "";
+
+    // Separadores para los botones
+    let separador1 =
+      botonCerrarJornada !== "" && botonEditar !== ""
+        ? `<div class="dropdown-divider"></div>`
+        : "";
+    let separador2 =
+      botonReplicaJornada !== "" &&
+      (botonCerrarJornada !== "" || botonEditar !== "")
+        ? `<div class="dropdown-divider"></div>`
+        : "";
 
     // Establecemos el contenido de la fila (tr) con los datos de la jornada y los botones.
     tr.innerHTML = `
-            <td>${jornada.idJornada}</td>
-            <td>${jornada.Folio}</td>
-            <td>${jornada.idUnidad}</td>
-            <td>${jornada.FechaEmision}</td>
-            <td>${jornada.FechaCierre}</td>
-            <td>${jornada.Estatus}</td>
-            <td>${jornada.EstatusReplica}</td>
-            <td>
-              <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${
-                jornada.idJornada
-              }" 
-                  aria-expanded="false" aria-controls="collapse${
-                    jornada.idJornada
-                  }">
-                <i class="fas fa-eye"></i>
-              </button>
-            </td>
-            <td>
-              <button class="btn btn-warning btn-editar" data-jornada='${JSON.stringify(
-                jornada
-              )}'>
-                <i class="fas fa-edit"></i> Editar
-              </button><br>
-              ${botonCerrarJornada}<br>
-              ${botonReplicaJornada}
-            </td>`;
+      <td>${jornada.idJornada}</td>
+      <td>${jornada.Folio}</td>
+      <td>${jornada.idUnidad}</td>
+      <td>${jornada.FechaEmision}</td>
+      <td>${jornada.FechaCierre}</td>
+      <td>${jornada.Estatus}</td>
+      <td>${jornada.EstatusReplica}</td>
+      <td>
+        <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${jornada.idJornada}" aria-expanded="false" aria-controls="collapse${jornada.idJornada}">
+          <i class="fas fa-eye"></i>
+        </button>
+      </td>
+      <td>
+        <!-- Menú desplegable de acciones -->
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton${jornada.idJornada}" data-bs-toggle="dropdown" aria-expanded="false">
+            Acciones
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${jornada.idJornada}">
+            ${botonEditar}
+            ${separador1}
+            ${botonCerrarJornada}
+            ${separador2}
+            ${botonReplicaJornada}
+          </ul>
+        </div>
+      </td>`;
 
     // Añadimos la fila (tr) al cuerpo de la tabla.
     tbody.appendChild(tr);
@@ -375,13 +395,13 @@ function renderizarTablaJornadas(jornadas) {
     // Creamos una fila adicional para mostrar detalles (ventas) de la jornada cuando se expanda.
     let trCollapse = document.createElement("tr");
     trCollapse.innerHTML = `
-            <td colspan="9">
-                <div class="collapse" id="collapse${jornada.idJornada}">
-                    <div class="card card-body">
-                        ${renderizarTablaVentas(jornada.sales)}
-                    </div>
-                </div>
-            </td>`;
+      <td colspan="9">
+        <div class="collapse" id="collapse${jornada.idJornada}">
+          <div class="card card-body">
+            ${renderizarTablaVentas(jornada.sales)}
+          </div>
+        </div>
+      </td>`;
 
     // Añadimos la fila de detalles al cuerpo de la tabla.
     tbody.appendChild(trCollapse);
@@ -394,62 +414,89 @@ function renderizarTablaJornadas(jornadas) {
  * @returns {string} - Retorna una cadena HTML que representa la tabla de ventas.
  */
 function renderizarTablaVentas(ventas) {
-  // Iniciamos con la estructura base de la tabla de ventas.
-  let tablaVentas = `<table class="table table-hover table-striped table-bordered table-ventas">
-                      <thead>
-                        <tr>
-                          <th>Folio Venta</th>
-                          <th>Volumen</th>
-                          <th>Precio</th>
-                          <th>Total Venta</th>
-                          <th>Fecha Inicio</th>
-                          <th>Fecha Fin</th>
-                          <th>Estatus Entrega</th>
-                          <th>Estatus Réplica</th>
-                          <th>Acciones</th>
-                        </tr>
-                      </thead>
-                      <tbody>`;
+  let tablaVentas = `
+    <table class="table table-hover table-striped table-bordered table-ventas">
+      <thead>
+        <tr>
+          <th>Folio Venta</th>
+          <th>Volumen</th>
+          <th>Precio</th>
+          <th>Total Venta</th>
+          <th>Fecha Inicio</th>
+          <th>Fecha Fin</th>
+          <th>Estatus Entrega</th>
+          <th>Estatus Réplica</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>`;
 
-  // Iteramos sobre cada venta en el arreglo.
   ventas.forEach((venta) => {
-    // Botón para forzar la réplica de la venta.
-    let botonForzarReplica = "";
-    if (venta.EstatusReplica === "1") {
-      botonForzarReplica = `<button class="btn btn-primary btn-forzar-replica-venta" data-venta-id="${venta.id}">
-                      <i class="fas fa-sync-alt"></i> Forzar Réplica
-                    </button>`;
-    }
+    // Botón de "Forzar Réplica"
+    let botonForzarReplica =
+      venta.EstatusReplica === "1"
+        ? `
+      <a class="dropdown-item cursor-pointer btn-forzar-replica-venta" data-venta-id="${venta.id}">
+        <i class="fas fa-sync-alt"></i> Forzar Réplica
+      </a>`
+        : "";
+
+    // Botones de "Detalle" y "Editar Venta"
+    let botonDetalle = `
+      <a class="dropdown-item cursor-pointer btn-detalle" data-venta='${JSON.stringify(
+        venta
+      )}'>
+        <i class="fas fa-info-circle"></i> Detalle
+      </a>`;
+    let botonEditarVenta = `
+      <a class="dropdown-item cursor-pointer btn-editar-venta" data-venta='${JSON.stringify(
+        venta
+      )}'>
+        <i class="fas fa-edit"></i> Editar
+      </a>`;
+
+    // Separadores para los botones
+    let separador1 =
+      botonEditarVenta !== "" && botonDetalle !== ""
+        ? `<div class="dropdown-divider"></div>`
+        : "";
+    let separador2 =
+      botonForzarReplica !== "" &&
+      (botonEditarVenta !== "" || botonDetalle !== "")
+        ? `<div class="dropdown-divider"></div>`
+        : "";
+
+    // Acciones agrupadas en un dropdown
+    let acciones = `
+      <div class="btn-group">
+        <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Acciones
+        </button>
+        <div class="dropdown-menu">
+          ${botonDetalle}
+          ${separador1}
+          ${botonEditarVenta}
+          ${separador2}
+          ${botonForzarReplica}
+        </div>
+      </div>`;
 
     // Añadimos una fila por cada venta con sus datos y botones de acción.
-    tablaVentas += `<tr>
-                      <td>${venta.FolioVenta}</td>
-                      <td>${venta.Volumen}</td>
-                      <td>${venta.Precio}</td>
-                      <td>${venta.TotalVenta}</td>
-                      <td>${venta.FechaInicio}</td>
-                      <td>${venta.FechaFin}</td>
-                      <td>${venta.estatusEntrega}</td>
-                      <td>${venta.EstatusReplica}</td>
-                      <td>
-                        <button class="btn btn-info btn-detalle" data-venta='${JSON.stringify(
-                          venta
-                        )}'>
-                            <i class="fas fa-info-circle"></i> Detalle
-                        </button><br>
-                        <button class="btn btn-warning btn-editar-venta" data-venta='${JSON.stringify(
-                          venta
-                        )}'>
-                            <i class="fas fa-edit"></i> Editar
-                        </button><br>
-                        ${botonForzarReplica}
-                      </td>
-                    </tr>`;
+    tablaVentas += `
+      <tr>
+        <td>${venta.FolioVenta}</td>
+        <td>${venta.Volumen}</td>
+        <td>${venta.Precio}</td>
+        <td>${venta.TotalVenta}</td>
+        <td>${venta.FechaInicio}</td>
+        <td>${venta.FechaFin}</td>
+        <td>${venta.estatusEntrega}</td>
+        <td>${venta.EstatusReplica}</td>
+        <td>${acciones}</td>
+      </tr>`;
   });
 
-  // Finalizamos la estructura de la tabla.
-  tablaVentas += `  </tbody>
-                  </table>`;
+  tablaVentas += `</tbody></table>`;
 
   return tablaVentas;
 }
@@ -458,26 +505,34 @@ function renderizarDetalleVenta(venta) {
   // Aquí puedes formatear la información de la venta como un ticket
   console.log(venta);
   let detalleVenta = `
-      <div class="ticket">
-          <p><strong>Folio venta:</strong> ${venta.FolioVenta}</p>
-          <p><strong>ID venta:</strong> ${venta.IdVenta}</p>
-          <p><strong>Volumen:</strong> ${venta.Volumen}</p>
-          <p><strong>Masa:</strong> ${venta.Masa}</p>
-          <p><strong>Densidad:</strong> ${venta.Densidad}</p>
-          <p><strong>Temperatura:</strong> ${venta.Temperatura}</p>
-          <p><strong>Precio:</strong> ${venta.Precio}</p>
-          <p><strong>Total venta:</strong> ${venta.TotalVenta}</p>
-          <p><strong>Fecha inicio:</strong> ${venta.FechaInicio}</p>
-          <p><strong>Fecha fin:</strong> ${venta.FechaFin}</p>
-          <p><strong>Lectura inicial:</strong> ${venta.LecturaInicial}</p>
-          <p><strong>Lectura final:</strong> ${venta.LecturaFinal}</p>
-          <p><strong>Sistema lectura inicial:</strong> ${venta.sistemaLecturaInicial}</p>
-          <p><strong>Sistema lectura final:</strong> ${venta.sistemaLecturaFinal}</p>
-          <p><strong>Estatus entrega:</strong> ${venta.estatusEntrega}</p>
-          <p><strong>Litros marcados:</strong> ${venta.LitrosMarcados}</p>
-          <p><strong>Total marcado:</strong> ${venta.TotalMarcado}</p>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="ticket">
+              <p><strong>Folio venta:</strong> ${venta.FolioVenta}</p>
+              <p><strong>ID venta:</strong> ${venta.IdVenta}</p>
+              <p><strong>Volumen:</strong> ${venta.Volumen}</p>
+              <p><strong>Masa:</strong> ${venta.Masa}</p>
+              <p><strong>Densidad:</strong> ${venta.Densidad}</p>
+              <p><strong>Temperatura:</strong> ${venta.Temperatura}</p>
+              <p><strong>Precio:</strong> ${venta.Precio}</p>
+              <p><strong>Total venta:</strong> ${venta.TotalVenta}</p>
+              <p><strong>Fecha inicio:</strong> ${venta.FechaInicio}</p>
+              <p><strong>Fecha fin:</strong> ${venta.FechaFin}</p>
+              <p><strong>Lectura inicial:</strong> ${venta.LecturaInicial}</p>
+              <p><strong>Lectura final:</strong> ${venta.LecturaFinal}</p>
+              <p><strong>Sistema lectura inicial:</strong> ${venta.sistemaLecturaInicial}</p>
+              <p><strong>Sistema lectura final:</strong> ${venta.sistemaLecturaFinal}</p>
+              <p><strong>Estatus entrega:</strong> ${venta.estatusEntrega}</p>
+              <p><strong>Litros marcados:</strong> ${venta.LitrosMarcados}</p>
+              <p><strong>Total marcado:</strong> ${venta.TotalMarcado}</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+              <div id="map" position: sticky; top: 20px;"></div>
+          </div>
+        </div>
       </div>
-      <div id="map" style="height: 300px;"></div>
   `;
 
   return detalleVenta;
@@ -676,8 +731,10 @@ function initMap(lat, lon) {
   L.marker([lat, lon]).addTo(map);
 }
 
-document.getElementById("kill-replica").addEventListener("click", function() {
-  if (confirm("¿Estás seguro de que deseas matar la réplica de todas las ventas?")) {
+document.getElementById("kill-replica").addEventListener("click", function () {
+  if (
+    confirm("¿Estás seguro de que deseas matar la réplica de todas las ventas?")
+  ) {
     // Llamar a la función o API que mata la réplica
     handleKillReplica();
   }
@@ -711,7 +768,7 @@ async function handleKillReplica() {
         showConfirmButton: false,
         timer: 1500,
       });
-      fetchVentasAndJornadas();  // Si es necesario volver a obtener los datos después de la acción
+      fetchVentasAndJornadas(); // Si es necesario volver a obtener los datos después de la acción
     } else {
       Swal.fire({
         icon: "error",
@@ -729,14 +786,18 @@ async function handleKillReplica() {
   }
 }
 
-
-document.getElementById("initialize-readers").addEventListener("click", function() {
-  let readersValue = prompt("Introduce el valor para inicializar las lecturas:", "");
-  if (readersValue) {
-    // Llamar a la función o API para inicializar las lecturas con el valor proporcionado
-    handleInitializeReaders(readersValue);
-  }
-});
+document
+  .getElementById("initialize-readers")
+  .addEventListener("click", function () {
+    let readersValue = prompt(
+      "Introduce el valor para inicializar las lecturas:",
+      ""
+    );
+    if (readersValue) {
+      // Llamar a la función o API para inicializar las lecturas con el valor proporcionado
+      handleInitializeReaders(readersValue);
+    }
+  });
 
 async function handleInitializeReaders(readersValue) {
   try {
@@ -766,7 +827,7 @@ async function handleInitializeReaders(readersValue) {
         showConfirmButton: false,
         timer: 1500,
       });
-      fetchVentasAndJornadas();  // Si es necesario volver a obtener los datos después de la acción
+      fetchVentasAndJornadas(); // Si es necesario volver a obtener los datos después de la acción
     } else {
       Swal.fire({
         icon: "error",
@@ -783,7 +844,6 @@ async function handleInitializeReaders(readersValue) {
     });
   }
 }
-
 
 document.querySelector(".btn-regresar").addEventListener("click", function () {
   window.location.href = "panelDeControl.html";
