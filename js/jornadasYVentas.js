@@ -5,8 +5,9 @@ let jornadaData = {}; // Variable para almacenar los datos de la jornada
 let ventaData = {}; // Variable para almacenar los datos de la venta
 let jornadasData = []; // Almacena todas las jornadas para poder filtrar después
 
-// El objeto 'dbConfig' podría tener la configuración de la base de datos si la necesitas.
-const dbConfig = JSON.parse(sessionStorage.getItem("dbConfig"));
+// El objeto 'dbConfigPipas' y 'dbConfigServer' podría tener la configuración de la base de datos si la necesitas.
+const dbConfigPipas = sessionStorage.getItem("dbConfigPipas");
+const dbConfigServer = sessionStorage.getItem("dbConfigServer");
 
 function filtrarJornadas(query) {
   // Convertimos la consulta a minúsculas para una búsqueda no sensible a mayúsculas/minúsculas
@@ -26,6 +27,7 @@ function filtrarJornadas(query) {
 // Obtienes los datos de la API y los renderizas en la tabla.
 async function fetchVentasAndJornadas() {
   try {
+    console.log(dbConfigPipas)
     const tbody = document.querySelector("tbody");
     tbody.innerHTML = ""; // Limpiar el tbody antes de añadir nuevos datos.
 
@@ -36,17 +38,21 @@ async function fetchVentasAndJornadas() {
       },
       body: JSON.stringify({
         mode: "journeys",
-        connection: dbConfig, // Aquí irían los datos de conexión si son necesarios.
+        connection: JSON.parse(dbConfigPipas), // Aquí irían los datos de conexión si son necesarios.
         journeysales: {
           step: 1,
           folio: 0,
           id: 0,
           readers: null,
-        },
+        }
       }),
     });
 
+    console.log(dbConfigPipas)
+
     let data = await response.json();
+
+    console.log(data)
 
     if (data && data[0] && data[0].obj) {
       jornadasData = data[0].obj; // Guardar todas las jornadas
@@ -94,7 +100,7 @@ async function handleFormSubmissionJornadas() {
       },
       body: JSON.stringify({
         mode: "journeys",
-        connection: dbConfig,
+        connection: dbConfigPipas,
         journeysales: updatedData,
       }),
     });
@@ -207,7 +213,7 @@ async function handleFormSubmissionVentas() {
       },
       body: JSON.stringify({
         mode: "journeys",
-        connection: dbConfig,
+        connection: dbConfigPipas,
         journeysales: updatedData,
       }),
     });
@@ -327,8 +333,8 @@ function renderizarTablaJornadas(jornadas) {
     // Establecer botones
     let botonEditar = `
       <a class="dropdown-item cursor-pointer btn-editar" data-jornada='${JSON.stringify(
-        jornada
-      )}'>
+      jornada
+    )}'>
         <i class="fas fa-edit"></i> Editar
       </a>`;
 
@@ -355,7 +361,7 @@ function renderizarTablaJornadas(jornadas) {
         : "";
     let separador2 =
       botonReplicaJornada !== "" &&
-      (botonCerrarJornada !== "" || botonEditar !== "")
+        (botonCerrarJornada !== "" || botonEditar !== "")
         ? `<div class="dropdown-divider"></div>`
         : "";
 
@@ -444,14 +450,14 @@ function renderizarTablaVentas(ventas) {
     // Botones de "Detalle" y "Editar Venta"
     let botonDetalle = `
       <a class="dropdown-item cursor-pointer btn-detalle" data-venta='${JSON.stringify(
-        venta
-      )}'>
+      venta
+    )}'>
         <i class="fas fa-info-circle"></i> Detalle
       </a>`;
     let botonEditarVenta = `
       <a class="dropdown-item cursor-pointer btn-editar-venta" data-venta='${JSON.stringify(
-        venta
-      )}'>
+      venta
+    )}'>
         <i class="fas fa-edit"></i> Editar
       </a>`;
 
@@ -462,7 +468,7 @@ function renderizarTablaVentas(ventas) {
         : "";
     let separador2 =
       botonForzarReplica !== "" &&
-      (botonEditarVenta !== "" || botonDetalle !== "")
+        (botonEditarVenta !== "" || botonDetalle !== "")
         ? `<div class="dropdown-divider"></div>`
         : "";
 
@@ -572,7 +578,7 @@ async function handleCerrarJornada(event) {
       },
       body: JSON.stringify({
         mode: "journeys",
-        connection: dbConfig,
+        connection: dbConfigPipas,
         journeysales: {
           step: 2,
           folio: 0,
@@ -626,7 +632,7 @@ async function handleForzarReplicaJornada(event) {
       },
       body: JSON.stringify({
         mode: "journeys",
-        connection: dbConfig,
+        connection: dbConfigPipas,
         journeysales: {
           step: 3,
           folio: 0,
@@ -680,7 +686,7 @@ async function handleForzarReplicaVenta(event) {
       },
       body: JSON.stringify({
         mode: "sales", // Asumo que el modo sería 'sales', ajusta según tu API.
-        connection: dbConfig,
+        connection: dbConfigPipas,
         journeysales: {
           step: 4,
           folio: 0,
@@ -749,7 +755,7 @@ async function handleKillReplica() {
       },
       body: JSON.stringify({
         mode: "journeys",
-        connection: dbConfig,
+        connection: dbConfigPipas,
         journeysales: {
           step: 5,
           folio: 0,
@@ -808,7 +814,7 @@ async function handleInitializeReaders(readersValue) {
       },
       body: JSON.stringify({
         mode: "journeys",
-        connection: dbConfig,
+        connection: dbConfigPipas,
         journeysales: {
           step: 6,
           folio: 0,
@@ -863,5 +869,8 @@ document.getElementById("search-jornadas").addEventListener("input", (e) => {
   filtrarJornadas(e.target.value);
 });
 
-// Llamas a la función obtenerDatos() cuando el DOM está completamente cargado.
-document.addEventListener("DOMContentLoaded", fetchVentasAndJornadas);
+// Deberías envolver la llamada a tu función asíncrona dentro de otra función
+// que se pasa como callback al event listener.
+document.addEventListener("DOMContentLoaded", function() {
+  fetchVentasAndJornadas().catch(console.error);
+});

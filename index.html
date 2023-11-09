@@ -19,62 +19,124 @@
         <h1 class="mb-4 text-center">
           <i class="fas fa-database"></i> Configuración de la Base de Datos
         </h1>
-        <div class="mb-3">
-          <label for="host" class="form-label"
-            ><i class="fas fa-server"></i> Host</label
-          >
-          <input
-            type="text"
-            class="form-control"
-            id="host"
-            name="host"
-            required
-          />
+
+        <div class="row">
+          <!-- Sección de Pipas y Despachos -->
+          <div class="section">
+            <h3>Pipas y Despachos</h3>
+            <div class="mb-3">
+              <label for="host_pipas" class="form-label"
+                ><i class="fas fa-server"></i> Host</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="host_pipas"
+                name="host_pipas"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="username_pipas" class="form-label"
+                ><i class="fas fa-user"></i> Usuario</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="username_pipas"
+                name="username_pipas"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="password_pipas" class="form-label"
+                ><i class="fas fa-key"></i> Contraseña</label
+              >
+              <input
+                type="password"
+                class="form-control"
+                id="password_pipas"
+                name="password_pipas"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="dbname_pipas" class="form-label"
+                ><i class="fas fa-database"></i> Nombre de la Base de
+                Datos</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="dbname_pipas"
+                name="dbname_pipas"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Sección de Servidor -->
+          <div class="section">
+            <h3>Servidor</h3>
+            <div class="mb-3">
+              <label for="host_server" class="form-label"
+                ><i class="fas fa-server"></i> Host</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="host_server"
+                name="host_server"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="username_server" class="form-label"
+                ><i class="fas fa-user"></i> Usuario</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="username_server"
+                name="username_server"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="password_server" class="form-label"
+                ><i class="fas fa-key"></i> Contraseña</label
+              >
+              <input
+                type="password"
+                class="form-control"
+                id="password_server"
+                name="password_server"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="dbname_server" class="form-label"
+                ><i class="fas fa-database"></i> Nombre de la Base de
+                Datos</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="dbname_server"
+                name="dbname_server"
+                required
+              />
+            </div>
+          </div>
         </div>
 
-        <div class="mb-3">
-          <label for="username" class="form-label"
-            ><i class="fas fa-user"></i> Usuario</label
-          >
-          <input
-            type="text"
-            class="form-control"
-            id="username"
-            name="username"
-            required
-          />
-        </div>
-
-        <div class="mb-3">
-          <label for="password" class="form-label"
-            ><i class="fas fa-key"></i> Contraseña</label
-          >
-          <input
-            type="password"
-            class="form-control"
-            id="password"
-            name="password"
-            required
-          />
-        </div>
-
-        <div class="mb-3">
-          <label for="dbname" class="form-label"
-            ><i class="fas fa-database"></i> Nombre de la Base de Datos</label
-          >
-          <input
-            type="text"
-            class="form-control"
-            id="dbname"
-            name="dbname"
-            required
-          />
-        </div>
-
-        <button
-          type="button"
-          onclick="guardarConfiguracion()"
-        >
+        <button type="button" onclick="guardarConfiguracion()">
           <i class="fas fa-save"></i> Guardar Configuración
         </button>
         <div id="error-message" class="mt-3"></div>

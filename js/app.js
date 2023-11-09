@@ -1,26 +1,58 @@
-const apiUrl = "http://172.168.10.47/pipasetupweb/vistas/service.php";
+const apiUrlLocal = "http://172.168.10.47/pipasetupweb/vistas/service.php";
+const apiUrlServer = "http://192.168.200.144/ecosat/replicaventas/vistas/service.php";
 
 async function guardarConfiguracion() {
-  const host = document.getElementById("host").value;
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-  const dbname = document.getElementById("dbname").value;
+  const host_pipas = document.getElementById("host_pipas").value;
+  const username_pipas = document.getElementById("username_pipas").value;
+  const password_pipas = document.getElementById("password_pipas").value;
+  const dbname_pipas = document.getElementById("dbname_pipas").value;
 
-  const data = {
+  const host_server = document.getElementById("host_server").value;
+  const username_server = document.getElementById("username_server").value;
+  const password_server = document.getElementById("password_server").value;
+  const dbname_server = document.getElementById("dbname_server").value;
+
+  const dataPipas = {
     mode: "chkcon",
-    connection: { hostname: host, username, password, database: dbname },
+    connection: {
+      hostname: host_pipas,
+      username: username_pipas,
+      password: password_pipas,
+      database: dbname_pipas,
+    },
   };
 
-  await verificarConexion(data)
-    .then((res) => {
-      sessionStorage.setItem("dbConfig", JSON.stringify(data.connection));
-      window.location.href = "panelDeControl.html";
-      mostrarError("");
-    })
-    .catch((err) => mostrarError(err));
+  const dataServer = {
+    mode: "chkcon",
+    connection: {
+      hostname: host_server,
+      username: username_server,
+      password: password_server,
+      database: dbname_server,
+    },
+  };
+
+  try {
+    // Verificar la conexión para dataPipas y si es exitosa, guardar en sessionStorage
+    const resPipas = await verificarConexion(dataPipas, apiUrlLocal);
+    sessionStorage.setItem("dbConfigPipas", JSON.stringify(dataPipas.connection));
+
+    // Verificar la conexión para dataServer y si es exitosa, guardar en sessionStorage
+    const resServer = await verificarConexion(dataServer, apiUrlServer);
+    sessionStorage.setItem("dbConfigServer", JSON.stringify(dataServer.connection));
+
+    // Solo después de que ambas verificaciones son exitosas, redireccionar al panel de control
+    window.location.href = "panelDeControl.html";
+
+    // Limpiar cualquier mensaje de error que pudiera estar visible
+    mostrarError("");
+  } catch (err) {
+    // En caso de error en alguna de las conexiones, mostrar el mensaje de error
+    mostrarError(err);
+  }
 }
 
-async function verificarConexion(data) {
+async function verificarConexion(data, apiUrl) {
   try {
     const response = await fetch(apiUrl, {
       method: "POST",
