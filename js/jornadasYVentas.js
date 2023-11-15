@@ -125,25 +125,6 @@ async function handleFormSubmissionJornadas() {
   }
 }
 
-document.addEventListener("click", function (e) {
-  if (e.target.classList.contains("btn-editar")) {
-    jornadaData = JSON.parse(e.target.dataset.jornada); // Almacena los datos en jornadaData
-
-    document.getElementById("idJornada").value = jornadaData.idJornada;
-    document.getElementById("FechaEmision").value = jornadaData.FechaEmision;
-    document.getElementById("FechaCierre").value = jornadaData.FechaCierre;
-    document.getElementById("EstatusReplica").value =
-      jornadaData.EstatusReplica;
-
-    // Puedes continuar configurando otros campos aquí, si los necesitas.
-
-    const myModal = new bootstrap.Modal(
-      document.getElementById("editarJornadaModal")
-    );
-    myModal.show();
-  }
-});
-
 function formatDateTime(dateTimeStr) {
   // Remover PM/AM
   let sanitizedStr = dateTimeStr.replace(/ (AM|PM)/, "");
@@ -413,6 +394,25 @@ function renderizarTablaJornadas(jornadas) {
     tbody.appendChild(trCollapse);
   });
 }
+
+document.addEventListener("click", function (e) {
+  if (e.target.classList.contains("btn-editar")) {
+    jornadaData = JSON.parse(e.target.dataset.jornada); // Almacena los datos en jornadaData
+
+    document.getElementById("idJornada").value = jornadaData.idJornada;
+    document.getElementById("FechaEmision").value = jornadaData.FechaEmision;
+    document.getElementById("FechaCierre").value = jornadaData.FechaCierre;
+    document.getElementById("EstatusReplica").value =
+      jornadaData.EstatusReplica;
+
+    // Puedes continuar configurando otros campos aquí, si los necesitas.
+
+    const myModal = new bootstrap.Modal(
+      document.getElementById("editarJornadaModal")
+    );
+    myModal.show();
+  }
+});
 
 /**
  * Función que renderiza las ventas en una tabla HTML.

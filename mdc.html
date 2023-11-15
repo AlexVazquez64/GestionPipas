@@ -37,7 +37,10 @@
         class="form-control mb-3"
       />
 
-      <table id="tabla-mdcs" class="table table-hover table-striped table-bordered">
+      <table
+        id="tabla-mdcs"
+        class="table table-hover table-striped table-bordered"
+      >
         <thead>
           <tr>
             <th>Id MDC</th>
@@ -55,49 +58,20 @@
       </table>
     </div>
 
-    <div
-      class="modal fade"
-      id="detalleVentaModal"
-      tabindex="-1"
-      aria-labelledby="detalleVentaModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="detalleVentaModalLabel">
-              Detalle de la Venta
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body" id="detalleVentaModalBody">
-            <!-- Aquí se colocará la información del ticket y el mapa -->
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div id="alertContainer"></div>
 
-    <!-- MODAL EDITAR JORNADA -->
+    <!-- MODAL EDITAR MDC -->
     <div
       class="modal fade"
-      id="editarJornadaModal"
+      id="editarMdcModal"
       tabindex="-1"
-      aria-labelledby="editarJornadaModalLabel"
+      aria-labelledby="editarMdcModalLabel"
       aria-hidden="true"
     >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="editarJornadaModalLabel">
-              Editar Jornada
-            </h5>
+            <h5 class="modal-title" id="editarMdcModalLabel">Editar MDC</h5>
             <button
               type="button"
               class="btn-close"
@@ -105,192 +79,53 @@
               aria-label="Close"
             ></button>
           </div>
+          
           <div class="modal-body">
-            <form id="editarJornadaForm" novalidate>
+            <form id="editarMdcForm" novalidate>
               <div class="mb-3">
-                <label for="FechaEmision" class="form-label"
-                  >Fecha Emisión</label
-                >
-                <input
-                  type="datetime-local"
-                  class="form-control"
-                  id="FechaEmision"
-                  required
-                />
+                <label for="idMdc" class="form-label">Id MDC</label>
+                <input type="text" class="form-control" id="idMdc" required />
               </div>
 
               <div class="mb-3">
-                <label for="FechaCierre" class="form-label">Fecha Cierre</label>
-                <input
-                  type="datetime-local"
-                  class="form-control"
-                  id="FechaCierre"
-                  required
-                />
+                <label for="idUnit" class="form-label">Id Unidad</label>
+                <input type="text" class="form-control" id="idUnit" required />
               </div>
 
               <div class="mb-3">
-                <label for="EstatusReplica" class="form-label"
-                  >Estatus Réplica</label
-                >
+                <label for="description" class="form-label">Descripción</label>
                 <input
                   type="text"
                   class="form-control"
-                  id="EstatusReplica"
-                  required
-                />
-              </div>
-              <input type="hidden" id="idJornada" value="" />
-              <button type="submit" class="btn btn-primary">Actualizar</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODAL EDITAR VENTA -->
-    <div
-      class="modal fade"
-      id="editarVentaModal"
-      tabindex="-1"
-      aria-labelledby="editarVentaModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="editarVentaModalLabel">Editar Venta</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-
-          <div class="modal-body">
-            <form id="editarVentaForm" novalidate>
-              <input type="hidden" id="idVenta" value="" />
-
-              <!-- Lista de campos a editar -->
-              <div class="mb-3">
-                <label for="Masa" class="form-label">Masa</label>
-                <input type="text" class="form-control" id="Masa" required />
-              </div>
-
-              <div class="mb-3">
-                <label for="Volumen" class="form-label">Volumen</label>
-                <input type="text" class="form-control" id="Volumen" required />
-              </div>
-
-              <div class="mb-3">
-                <label for="Densidad" class="form-label">Densidad</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="Densidad"
+                  id="description"
                   required
                 />
               </div>
 
               <div class="mb-3">
-                <label for="Temperatura" class="form-label">Temperatura</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="Temperatura"
-                  required
-                />
+                <label for="code" class="form-label">Código MDC</label>
+                <input type="text" class="form-control" id="code" required />
               </div>
 
               <div class="mb-3">
-                <label for="Precio" class="form-label">Precio</label>
-                <input type="text" class="form-control" id="Precio" required />
+                <label for="company" class="form-label">Compañía</label>
+                <input type="text" class="form-control" id="company" required />
               </div>
 
               <div class="mb-3">
-                <label for="Esquema" class="form-label">Esquema</label>
-                <input type="text" class="form-control" id="Esquema" required />
+                <h3>Masico:</h3>
               </div>
 
               <div class="mb-3">
-                <label for="TotalVenta" class="form-label">Total Venta</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="TotalVenta"
-                  required
-                />
+                <label for="idMass" class="form-label">Id Masico</label>
+                <input type="text" class="form-control" id="idMass" required />
               </div>
 
               <div class="mb-3">
-                <label for="FechaInicio" class="form-label">Fecha Inicio</label>
-                <input
-                  type="datetime-local"
-                  class="form-control"
-                  id="FechaInicio"
-                  required
-                />
+                <label for="port" class="form-label">Puerto</label>
+                <input type="text" class="form-control" id="port" required />
               </div>
-
-              <div class="mb-3">
-                <label for="FechaFin" class="form-label">Fecha Fin</label>
-                <input
-                  type="datetime-local"
-                  class="form-control"
-                  id="FechaFin"
-                  required
-                />
-              </div>
-
-              <div class="mb-3">
-                <label for="sistemaLecturaInicial" class="form-label"
-                  >Sistema Lectura Inicial</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="sistemaLecturaInicial"
-                  required
-                />
-              </div>
-
-              <div class="mb-3">
-                <label for="sistemaLecturaFinal" class="form-label"
-                  >Sistema Lectura Final</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="sistemaLecturaFinal"
-                  required
-                />
-              </div>
-
-              <div class="mb-3">
-                <label for="lecturaInicial" class="form-label"
-                  >Lectura Inicial</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="lecturaInicial"
-                  required
-                />
-              </div>
-
-              <div class="mb-3">
-                <label for="lecturaFinal" class="form-label"
-                  >Lectura Final</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="lecturaFinal"
-                  required
-                />
-              </div>
-
+              <!-- <input type="hidden" id="idJornada" value="" /> -->
               <button type="submit" class="btn btn-primary">Actualizar</button>
             </form>
           </div>
