@@ -25,3 +25,22 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
+
+// Evento para abrir el modal al hacer clic en el enlace
+document.querySelector('[href="schemas.html"]').addEventListener('click', function (event) {
+  event.preventDefault(); // Previene la navegación directa
+  const myModal = new bootstrap.Modal(document.getElementById('passwordModal'));
+  myModal.show();
+});
+
+// Función para verificar la contraseña
+function verificarPassword() {
+  const passwordCorrecta = "98374252"; // Establece tu contraseña aquí
+  const passwordIngresada = document.getElementById('passwordInput').value;
+
+  if (passwordIngresada === passwordCorrecta) {
+    window.location.href = "schemas.html"; // Redirige si la contraseña es correcta
+  } else {
+    alert("Contraseña incorrecta."); // Muestra un mensaje de error
+  }
+}
