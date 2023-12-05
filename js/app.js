@@ -1,4 +1,5 @@
-const apiUrlLocal = "http://172.168.10.47/pipasetupweb/vistas/service.php";
+// const apiUrlLocal = "http://172.168.10.47/pipasetupweb/vistas/service.php";
+const apiUrlLocal = "http://localhost/ecosat/pipasetupweb/vistas/service.php";
 const apiUrlServer = "http://localhost/ecosat/pipasetupweb/vistas/service.php";
 
 async function guardarConfiguracion() {
