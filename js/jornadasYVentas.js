@@ -1,5 +1,5 @@
 // const apiUrl = "http://172.168.10.47/pipasetupweb/vistas/service.php";
-const apiUrl = "http://192.168.200.144/ecosat/replicaventas/vistas/service.php";
+const apiUrl = "http://localhost/ecosat/pipasetupweb/vistas/service.php";
 
 let jornadaData = {}; // Variable para almacenar los datos de la jornada
 let ventaData = {}; // Variable para almacenar los datos de la venta

@@ -1,4 +1,4 @@
-const apiUrl = "http://192.168.200.144/ecosat/replicaventas/vistas/service.php";
+const apiUrl = "http://localhost/ecosat/pipasetupweb/vistas/service.php";
 const dbConfigServer = sessionStorage.getItem("dbConfigServer");
 console.log("Recuperado de sessionStorage", dbConfigServer);
 
