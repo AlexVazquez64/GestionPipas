@@ -44,6 +44,7 @@ async function fetchVentasAndJornadas() {
           folio: 0,
           id: 0,
           readers: null,
+          joursale: []
         }
       }),
     });
