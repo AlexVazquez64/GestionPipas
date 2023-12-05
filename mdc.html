@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Configurar MDC</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+
+    <!-- SweetAlert2 CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+
+    <link rel="stylesheet" href="./css/mdc.css" />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <button class="btn-regresar">Regresar a Panel de Control</button>
+
+      <h1 class="mb-4 text-center">Configurar Pipas o Despachos</h1>
+      <!-- Input para búsqueda -->
+      <input
+        type="text"
+        id="search-jornadas"
+        placeholder="Buscar por ID Jornada, Folio, ID Unidad..."
+        class="form-control mb-3"
+      />
+
+      <table
+        id="tabla-mdcs"
+        class="table table-hover table-striped table-bordered"
+      >
+        <thead>
+          <tr>
+            <th>Id MDC</th>
+            <th>Id Unidad Entrega</th>
+            <th>MDC</th>
+            <th>Codigo MDC</th>
+            <th>Unidad Entrega</th>
+            <th>Detalle</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Las filas y columnas se agregarán aquí dinámicamente desde JavaScript -->
+        </tbody>
+      </table>
+    </div>
+
+    <div id="alertContainer"></div>
+
+    <!-- MODAL EDITAR MDC -->
+    <div
+      class="modal fade"
+      id="editarMdcModal"
+      tabindex="-1"
+      aria-labelledby="editarMdcModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editarMdcModalLabel">Editar MDC</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          
+          <div class="modal-body">
+            <form id="editarMdcForm" novalidate>
+              <div class="mb-3">
+                <label for="idMdc" class="form-label">Id MDC</label>
+                <input type="text" class="form-control" id="idMdc" required />
+              </div>
+
+              <div class="mb-3">
+                <label for="idUnit" class="form-label">Id Unidad</label>
+                <input type="text" class="form-control" id="idUnit" required />
+              </div>
+
+              <div class="mb-3">
+                <label for="description" class="form-label">Descripción</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="description"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="code" class="form-label">Código MDC</label>
+                <input type="text" class="form-control" id="code" required />
+              </div>
+
+              <div class="mb-3">
+                <label for="company" class="form-label">Compañía</label>
+                <input type="text" class="form-control" id="company" required />
+              </div>
+
+              <div class="mb-3">
+                <h3>Masico:</h3>
+              </div>
+
+              <div class="mb-3">
+                <label for="idMass" class="form-label">Id Masico</label>
+                <input type="text" class="form-control" id="idMass" required />
+              </div>
+
+              <div class="mb-3">
+                <label for="port" class="form-label">Puerto</label>
+                <input type="text" class="form-control" id="port" required />
+              </div>
+              <!-- <input type="hidden" id="idJornada" value="" /> -->
+              <button type="submit" class="btn btn-primary">Actualizar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="./js/mdc.js"></script>
+  </body>
+</html>

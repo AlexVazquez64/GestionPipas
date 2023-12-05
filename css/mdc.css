@@ -34,7 +34,7 @@ body {
 }
 
 .table,
-.table-ventas {
+.table-unidades-recepcion {
   background-color: #ffffff;
   color: #2c3e50;
   border-radius: 5px;
@@ -44,26 +44,26 @@ body {
 
 .table th,
 .table td,
-.table-ventas th,
-.table-ventas td {
+.table-unidades-recepcion th,
+.table-unidades-recepcion td {
   padding: 12px 15px;
   border-bottom: 1px solid #e7e7e7;
 }
 
 .table thead th,
-.table-ventas thead th {
+.table-unidades-recepcion thead th {
   background-color: #3498db;
   color: #ffffff;
   font-weight: 500;
 }
 
 .table tbody tr:last-child td,
-.table-ventas tbody tr:last-child td {
+.table-unidades-recepcion tbody tr:last-child td {
   border-bottom: none;
 }
 
 .table tbody tr:hover,
-.table-ventas tbody tr:hover {
+.table-unidades-recepcion tbody tr:hover {
   background-color: #e7e7e7;
 }
 
@@ -110,36 +110,6 @@ th {
   color: #2c3e50;
   border: none;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.ticket {
-  background-color: #ffffff;
-  border: 1px solid #e7e7e7;
-  border-radius: 5px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  margin: auto;
-  max-width: 500px;
-  padding: 20px;
-  font-family: "Arial", sans-serif;
-  line-height: 1.8;
-  color: #333;
-}
-
-.ticket p {
-  margin: 0 0 15px;
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #e7e7e7;
-  padding-bottom: 8px;
-}
-
-.ticket p:last-child {
-  border-bottom: none;
-}
-
-#map {
-  height: 500px;
-  margin: 20px 0;
 }
 
 .btn-close {

@@ -17,7 +17,9 @@
     <div class="container mt-5">
       <div class="d-flex justify-content-between align-items-center">
         <h1>Panel de Control</h1>
-        <button id="logoutBtn" class="btn btn-danger" onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
+        <button id="logoutBtn" class="btn btn-danger" onclick="cerrarSesion()">
+          <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </button>
       </div>
       <div class="row">
         <div class="col-md-4">
@@ -27,9 +29,7 @@
                 <i class="fas fa-cogs"></i> Configuración Nueva Pipa
               </h5>
               <p class="card-text">Accede para configurar una nueva pipa.</p>
-              <a href="configuracion.html" class="btn btn-primary"
-                >Configurar</a
-              >
+              <a href="mdc.html" class="btn btn-primary">Configurar</a>
             </div>
           </div>
         </div>
@@ -47,8 +47,8 @@
             </div>
           </div>
         </div>
-        
-        <div class="col-md-4">
+
+        <!-- <div class="col-md-4">
           <div class="card mb-4">
             <div class="card-body">
               <h5 class="card-title">
@@ -58,9 +58,9 @@
               <a href="gps.html" class="btn btn-primary">Gestionar</a>
             </div>
           </div>
-        </div>
+        </div> -->
 
-        <div class="col-md-4">
+        <!-- <div class="col-md-4">
           <div class="card mb-4">
             <div class="card-body">
               <h5 class="card-title"><i class="fas fa-microchip"></i> GPIOS</h5>
@@ -68,9 +68,9 @@
               <a href="gpios.html" class="btn btn-primary">Gestionar</a>
             </div>
           </div>
-        </div>
+        </div> -->
 
-        <div class="col-md-4">
+        <!-- <div class="col-md-4">
           <div class="card mb-4">
             <div class="card-body">
               <h5 class="card-title"><i class="fas fa-clone"></i> Réplicas</h5>
@@ -78,10 +78,63 @@
               <a href="replicas.html" class="btn btn-primary">Gestionar</a>
             </div>
           </div>
+        </div> -->
+
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="card-title">
+                <i class="fas fa-user-lock"></i> Control de Cuentas
+              </h5>
+              <p class="card-text">Accede para gestionar las cuentas</p>
+              <a href="schemas.html" class="btn btn-primary">Gestionar</a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- Modal para ingresar contraseña -->
+    <div
+      class="modal fade"
+      id="passwordModal"
+      tabindex="-1"
+      aria-labelledby="passwordModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="passwordModalLabel">
+              Acceso a Control de Cuentas
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <input
+              type="password"
+              id="passwordInput"
+              class="form-control"
+              placeholder="Ingrese la contraseña"
+            />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="verificarPassword()"
+            >
+              Acceder
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
     <script src="./js/panelDeControl.js"></script>
