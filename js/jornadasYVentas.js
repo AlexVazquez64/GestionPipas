@@ -1,5 +1,4 @@
-// const apiUrl = "http://172.168.10.47/pipasetupweb/vistas/service.php";
-const apiUrl = "http://localhost/ecosat/pipasetupweb/vistas/service.php";
+const apiUrl = "http://172.168.10.47/pipasetupweb/vistas/service.php";
 
 let jornadaData = {}; // Variable para almacenar los datos de la jornada
 let ventaData = {}; // Variable para almacenar los datos de la venta
@@ -224,53 +223,36 @@ document.addEventListener("click", function (e) {
   if (e.target.classList.contains("btn-editar-venta")) {
     ventaData = JSON.parse(e.target.dataset.venta);
 
-    // Función para validar los datos antes de asignarlos
-    function validateData(value) {
-      return value === undefined || value === null ? "0.0" : value;
+    // Función para validar y formatear los datos numéricos
+    function validateAndFormatNumber(value) {
+      let number = parseFloat(value);
+      return isNaN(number) ? "0.0000" : number.toFixed(4);
     }
 
-    document.getElementById("idVenta").value = validateData(ventaData.IdVenta);
-    document.getElementById("Masa").value = validateData(ventaData.Masa);
-    document.getElementById("Volumen").value = validateData(ventaData.Volumen);
-    document.getElementById("Densidad").value = validateData(
-      ventaData.Densidad
-    );
-    document.getElementById("Temperatura").value = validateData(
-      ventaData.Temperatura
-    );
-    document.getElementById("Precio").value = validateData(ventaData.Precio);
-    document.getElementById("Esquema").value = validateData(ventaData.Esquema);
-    document.getElementById("TotalVenta").value = validateData(
-      ventaData.TotalVenta
-    );
+    document.getElementById("idVenta").value = ventaData.IdVenta ?? ""; // ID de venta se mantiene como está
+    document.getElementById("Masa").value = validateAndFormatNumber(ventaData.Masa);
+    document.getElementById("Volumen").value = validateAndFormatNumber(ventaData.Volumen);
+    document.getElementById("Densidad").value = validateAndFormatNumber(ventaData.Densidad);
+    document.getElementById("Temperatura").value = validateAndFormatNumber(ventaData.Temperatura);
+    document.getElementById("Precio").value = validateAndFormatNumber(ventaData.Precio);
+    document.getElementById("Esquema").value = validateAndFormatNumber(ventaData.Esquema);
+    document.getElementById("TotalVenta").value = validateAndFormatNumber(ventaData.TotalVenta);
 
-    // Fechas no se validan ya que no queremos que se asignen a "0.0"
-    document.getElementById("FechaInicio").value = formatDateTime(
-      ventaData.FechaInicio
-    );
-    document.getElementById("FechaFin").value = formatDateTime(
-      ventaData.FechaFin
-    );
+    // Fechas no se validan ya que no queremos que se asignen a "0.0000"
+    document.getElementById("FechaInicio").value = formatDateTime(ventaData.FechaInicio);
+    document.getElementById("FechaFin").value = formatDateTime(ventaData.FechaFin);
 
-    document.getElementById("sistemaLecturaInicial").value = validateData(
-      ventaData.sistemaLecturaInicial
-    );
-    document.getElementById("sistemaLecturaFinal").value = validateData(
-      ventaData.sistemaLecturaFinal
-    );
-    document.getElementById("lecturaInicial").value = validateData(
-      ventaData.lecturaInicial
-    );
-    document.getElementById("lecturaFinal").value = validateData(
-      ventaData.lecturaFinal
-    );
+    // Otros campos como sistema de lectura, lecturas iniciales y finales pueden seguir usando validateData si no son estrictamente numéricos
+    document.getElementById("sistemaLecturaInicial").value = validateAndFormatNumber(ventaData.sistemaLecturaInicial);
+    document.getElementById("sistemaLecturaFinal").value = validateAndFormatNumber(ventaData.sistemaLecturaFinal);
+    document.getElementById("lecturaInicial").value = validateAndFormatNumber(ventaData.lecturaInicial);
+    document.getElementById("lecturaFinal").value = validateAndFormatNumber(ventaData.lecturaFinal);
 
-    const myModal = new bootstrap.Modal(
-      document.getElementById("editarVentaModal")
-    );
+    const myModal = new bootstrap.Modal(document.getElementById("editarVentaModal"));
     myModal.show();
   }
 });
+
 
 function showSweetAlert(message, type) {
   let iconType = type;
@@ -509,6 +491,10 @@ function renderizarTablaVentas(ventas) {
 }
 
 function renderizarDetalleVenta(venta) {
+  // Función para formatear los valores numéricos con cuatro decimales
+  function formatNumber(value) {
+    return parseFloat(value).toFixed(4);
+  }
   // Aquí puedes formatear la información de la venta como un ticket
   console.log(venta);
   let detalleVenta = `
@@ -518,21 +504,21 @@ function renderizarDetalleVenta(venta) {
             <div class="ticket">
               <p><strong>Folio venta:</strong> ${venta.FolioVenta}</p>
               <p><strong>ID venta:</strong> ${venta.IdVenta}</p>
-              <p><strong>Volumen:</strong> ${venta.Volumen}</p>
-              <p><strong>Masa:</strong> ${venta.Masa}</p>
-              <p><strong>Densidad:</strong> ${venta.Densidad}</p>
-              <p><strong>Temperatura:</strong> ${venta.Temperatura}</p>
-              <p><strong>Precio:</strong> ${venta.Precio}</p>
-              <p><strong>Total venta:</strong> ${venta.TotalVenta}</p>
+              <p><strong>Volumen:</strong> ${formatNumber(venta.Volumen)}</p>
+              <p><strong>Masa:</strong> ${formatNumber(venta.Masa)}</p>
+              <p><strong>Densidad:</strong> ${formatNumber(venta.Densidad)}</p>
+              <p><strong>Temperatura:</strong> ${formatNumber(venta.Temperatura)}</p>
+              <p><strong>Precio:</strong> ${formatNumber(venta.Precio)}</p>
+              <p><strong>Total venta:</strong> ${formatNumber(venta.TotalVenta)}</p>
               <p><strong>Fecha inicio:</strong> ${venta.FechaInicio}</p>
               <p><strong>Fecha fin:</strong> ${venta.FechaFin}</p>
-              <p><strong>Lectura inicial:</strong> ${venta.LecturaInicial}</p>
-              <p><strong>Lectura final:</strong> ${venta.LecturaFinal}</p>
-              <p><strong>Sistema lectura inicial:</strong> ${venta.sistemaLecturaInicial}</p>
-              <p><strong>Sistema lectura final:</strong> ${venta.sistemaLecturaFinal}</p>
+              <p><strong>Lectura inicial:</strong> ${formatNumber(venta.LecturaInicial)}</p>
+              <p><strong>Lectura final:</strong> ${formatNumber(venta.LecturaFinal)}</p>
+              <p><strong>Sistema lectura inicial:</strong> ${formatNumber(venta.sistemaLecturaInicial)}</p>
+              <p><strong>Sistema lectura final:</strong> ${formatNumber(venta.sistemaLecturaFinal)}</p>
               <p><strong>Estatus entrega:</strong> ${venta.estatusEntrega}</p>
-              <p><strong>Litros marcados:</strong> ${venta.LitrosMarcados}</p>
-              <p><strong>Total marcado:</strong> ${venta.TotalMarcado}</p>
+              <p><strong>Litros marcados:</strong> ${formatNumber(venta.LitrosMarcados)}</p>
+              <p><strong>Total marcado:</strong> ${formatNumber(venta.TotalMarcado)}</p>
             </div>
           </div>
           <div class="col-md-4">
@@ -872,6 +858,6 @@ document.getElementById("search-jornadas").addEventListener("input", (e) => {
 
 // Deberías envolver la llamada a tu función asíncrona dentro de otra función
 // que se pasa como callback al event listener.
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   fetchVentasAndJornadas().catch(console.error);
 });

@@ -18,8 +18,9 @@ function guardarConfiguracion() {
   };
 
   // URL del endpoint que verificará la conexión
-  const url = "http://localhost/ecosat/pipasetupweb/vistas/service.php";
-  // const url = "http://172.168.10.47/pipasetupweb/vistas/service.php";
+  // const url = "http://localhost/ecosat/pipasetupweb/vistas/service.php";
+  // const url = "http://172.168.200.144/ecosat/pipasetupweb/vistas/service.php";
+  const url = "http://172.168.10.47/pipasetupweb/vistas/service.php";
 
   // Realizar solicitud POST para verificar conexión
   fetch(url, {
